@@ -273,7 +273,7 @@ function Badge({ status }) {
   );
 }
 
-function PeakChart({ data }) {
+function PeakChart({ data, T = LIGHT }) {
   const hour = new Date().getHours();
   const currentHour = Math.max(0, Math.min(11, hour - 7));
   const max = Math.max(...data);
@@ -284,8 +284,8 @@ function PeakChart({ data }) {
         const cur = i === currentHour;
         return (
           <div key={i} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 4, height: "100%", justifyContent: "flex-end" }}>
-            <div style={{ width: "100%", height: h + "%", borderRadius: "4px 4px 0 0", background: cur ? (typeof dark !== 'undefined' && dark ? "#f0f0ee" : "#111") : "#e5e5e5", minHeight: 3 }} />
-            <span style={{ fontSize: 9, fontFamily: "'DM Mono',monospace", color: cur ? "#111" : "#ccc", fontWeight: cur ? 700 : 400 }}>{HOURS[i]}</span>
+            <div style={{ width: "100%", height: h + "%", borderRadius: "4px 4px 0 0", background: cur ? T.text : T.border2, minHeight: 3 }} />
+            <span style={{ fontSize: 9, fontFamily: "'DM Mono',monospace", color: cur ? T.text : T.text5, fontWeight: cur ? 700 : 400 }}>{HOURS[i]}</span>
           </div>
         );
       })}
@@ -442,7 +442,7 @@ function DetailView({ zone, onBack, bp, favorites, toggleFavorite, T = LIGHT, da
           <div>
             {/* Chart */}
             <SectionCard T={T} title="ความหนาแน่นรายชั่วโมง">
-              <PeakChart data={zone.peakHours} />
+              <PeakChart data={zone.peakHours} T={T} />
               <div style={{ fontSize: 11, color: T.text5, marginTop: 8, fontFamily: "'DM Mono',monospace" }}>■ ช่วงเวลาปัจจุบัน</div>
             </SectionCard>
 
@@ -639,13 +639,13 @@ function HomeView({ tab, setTab, zones, setSelectedZone, setView, bp, favorites,
 
         {/* Summary strip */}
         {tab !== "favorites" && <div style={{ display: "flex", gap: 10, marginBottom: 20, flexWrap: "wrap" }}>
-          <div style={{ background: T.bg2, border: `1.5px solid ${T.border}`, borderRadius: 12, padding: "10px 16px", flex: "2 1 160px", minWidth: 160, transition: "background 0.3s" }}>
+          <div style={{ background: T.bg2, border: `1.5px solid ${T.border}`, borderRadius: 12, padding: "10px 16px", flex: "1 1 0", minWidth: 0, transition: "background 0.3s" }}>
             <div style={{ fontSize: 11, color: T.text4, marginBottom: 2 }}>{tab === "parking" ? "ที่จอดว่าง / ทั้งหมด" : "ที่นั่งว่าง / ทั้งหมด"}</div>
             <div style={{ fontFamily: "'DM Mono',monospace", fontSize: 20, fontWeight: 600, color: "#12a05c" }}>
               {totalAvail} <span style={{ color: T.text5, fontWeight: 400 }}>/ {totalAll}</span> <span style={{ fontSize: 11, fontFamily: "'Noto Sans Thai',sans-serif", fontWeight: 400, color: T.text4 }}>{tab === "parking" ? "คัน" : "ที่นั่ง"}</span>
             </div>
           </div>
-          <div style={{ background: T.bg2, border: `1.5px solid ${T.border}`, borderRadius: 12, padding: "10px 16px", flex: "1 1 90px", minWidth: 90, transition: "background 0.3s" }}>
+          <div style={{ background: T.bg2, border: `1.5px solid ${T.border}`, borderRadius: 12, padding: "10px 16px", flex: "1 1 0", minWidth: 0, transition: "background 0.3s" }}>
             <div style={{ fontSize: 11, color: T.text4, marginBottom: 2 }}>เต็ม</div>
             <div style={{ fontFamily: "'DM Mono',monospace", fontSize: 20, fontWeight: 600, color: "#dc2626" }}>{fullZones} <span style={{ fontSize: 11, fontFamily: "'Noto Sans Thai',sans-serif", fontWeight: 400, color: T.text4 }}>แห่ง</span></div>
           </div>
