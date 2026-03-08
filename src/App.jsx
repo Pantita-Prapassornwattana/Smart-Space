@@ -51,12 +51,35 @@ function useBreakpoint() {
 
 /* ─── Data ───────────────────────────────────────── */
 const PARKING_ZONES = [
-  { id: 1, type: "parking", name: "ลานจอดรถ คุณหญิงหลง", available: 4,  total: 50, distance: "50 ม.",  slots: Array.from({length:50},(_,i)=>({id:i,occupied:i>=4})),  peakHours:[2,3,5,8,12,15,18,20,14,10,7,4], lastUpdated:"2 นาทีที่แล้ว" },
-  { id: 2, type: "parking", name: "ลานจอดรถ BSC",         available: 20, total: 50, distance: "150 ม.", slots: Array.from({length:50},(_,i)=>({id:i,occupied:i>=20})), peakHours:[1,2,4,7,10,13,16,18,12,9,6,3], lastUpdated:"1 นาทีที่แล้ว" },
-];
-const STUDY_ZONES = [
-  { id: 3, type: "study", name: "พื้นที่อ่านหนังสือ ชั้น 3", available: 8,  total: 30, distance: "ในตึก", slots: Array.from({length:30},(_,i)=>({id:i,occupied:i>=8})),  peakHours:[0,1,3,6,9,12,14,16,13,10,7,4], lastUpdated:"30 วินาทีที่แล้ว" },
-  { id: 4, type: "study", name: "พื้นที่อ่านหนังสือ ชั้น 2", available: 15, total: 40, distance: "ในตึก", slots: Array.from({length:40},(_,i)=>({id:i,occupied:i>=15})), peakHours:[0,1,2,5,8,11,13,15,12,9,6,3], lastUpdated:"5 นาทีที่แล้ว" },
+  { id: 1, type: "parking", name: "ลานจอดรถ คุณหญิงหลง", available: 4,  total: 50, distance: "50 ม.",  
+    slots: Array.from({length:50},(_,i)=>({id:i,occupied:i>=4})),
+    peakHours:[2,3,5,8,12,15,18,20,14,10,7,4],
+    lastUpdated:"2 นาทีที่แล้ว"
+  },
+
+  { id: 2, type: "parking", name: "ลานจอดรถ BSC", available: 20, total: 50, distance: "150 ม.", 
+    slots: Array.from({length:50},(_,i)=>({id:i,occupied:i>=20})),
+    peakHours:[1,2,4,7,10,13,16,18,12,9,6,3],
+    lastUpdated:"1 นาทีที่แล้ว"
+  },
+
+  { id: 8, type: "parking", name: "ลานจอดรถคณะวิทยาศาสตร์", available: 12, total: 60, distance: "200 ม.", 
+    slots: Array.from({length:60},(_,i)=>({id:i,occupied:i>=12})),
+    peakHours:[3,5,8,10,12,15,18,16,13,9,6,4],
+    lastUpdated:"1 นาทีที่แล้ว"
+  },
+
+  { id: 9, type: "parking", name: "ลานจอดรถคณะวิศวกรรมศาสตร์", available: 6, total: 55, distance: "250 ม.", 
+    slots: Array.from({length:55},(_,i)=>({id:i,occupied:i>=6})),
+    peakHours:[4,6,9,12,15,18,20,17,14,11,8,5],
+    lastUpdated:"3 นาทีที่แล้ว"
+  },
+
+  { id: 10, type: "parking", name: "ลานจอดรถคณะอุตสาหกรรมเกษตร", available: 18, total: 40, distance: "300 ม.", 
+    slots: Array.from({length:40},(_,i)=>({id:i,occupied:i>=18})),
+    peakHours:[2,4,6,9,11,13,15,14,12,9,7,3],
+    lastUpdated:"2 นาทีที่แล้ว"
+  }
 ];
 const HOURS = ["7","8","9","10","11","12","13","14","15","16","17","18"];
 
