@@ -213,8 +213,8 @@ const STUDY_ZONES = [
 const HOURS = ["7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18"];
 
 const STATUS_CONFIG = {
-  green:  { label: "ว่างเยอะ",  bg: "#e8faf2", color: "#12a05c", bar: "#1ec970" },
-  orange: { label: "เริ่มแน่น", bg: "#fff7e6", color: "#d97706", bar: "#f59e0b" },
+  green:  { label: "ว่าง",  bg: "#e8faf2", color: "#12a05c", bar: "#1ec970" },
+  orange: { label: "ใกล้เต็ม", bg: "#fff7e6", color: "#d97706", bar: "#f59e0b" },
   red:    { label: "เต็ม",      bg: "#fef2f2", color: "#dc2626", bar: "#ef4444" },
 };
 
@@ -514,12 +514,35 @@ function Sidebar({ tab, setTab, view, setView }) {
   );
 }
 
+/* ─── Filter Pills ───────────────────────────────── */
+function FilterPills({ active, onChange }) {
+  const opts = [
+    { id: "all",    label: "ทั้งหมด" },
+    { id: "green",  label: "🟢 ว่าง" },
+    { id: "orange", label: "🟠 ใกล้เต็ม" },
+    { id: "red",    label: "🔴 เต็ม" },
+  ];
+  return (
+    <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+      {opts.map(o => (
+        <button key={o.id} onClick={() => onChange(o.id)}
+          style={{ padding: "6px 14px", borderRadius: 20, border: `1.5px solid ${active === o.id ? "#111" : "#e5e5e5"}`, background: active === o.id ? "#111" : "#fff", color: active === o.id ? "#fff" : "#555", fontFamily: "'Noto Sans Thai',sans-serif", fontSize: 12, fontWeight: active === o.id ? 600 : 400, cursor: "pointer", transition: "all 0.15s", whiteSpace: "nowrap" }}>
+          {o.label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 /* ─── Home / Dashboard ───────────────────────────── */
 function HomeView({ tab, setTab, zones, setSelectedZone, setView, bp }) {
   const [query, setQuery] = useState("");
+  const [filter, setFilter] = useState("all");
   const isDesktop = bp === "desktop";
   const isTablet  = bp === "tablet";
-  const filtered = zones.filter(z => !query || z.name.toLowerCase().includes(query.toLowerCase()));
+  const filtered = zones
+    .filter(z => !query || z.name.toLowerCase().includes(query.toLowerCase()))
+    .filter(z => filter === "all" || getStatus(z.available) === filter);
   const unreadCount = NOTIFS.filter(n => n.unread).length;
 
   const topPad = isDesktop ? "28px 36px 20px" : isTablet ? "20px 28px 16px" : "52px 20px 16px";
@@ -545,6 +568,7 @@ function HomeView({ tab, setTab, zones, setSelectedZone, setView, bp }) {
           </div>
           <div style={{ marginBottom: 12 }}><TabToggle tab={tab} setTab={setTab} /></div>
           <SearchBar value={query} onChange={setQuery} placeholder={tab === "parking" ? "ค้นหา เช่น BSC หรือ คุณหญิงหลง" : "ค้นหาพื้นที่..."} />
+          <div style={{ marginTop: 10 }}><FilterPills active={filter} onChange={setFilter} /></div>
         </div>
       )}
 
@@ -552,8 +576,11 @@ function HomeView({ tab, setTab, zones, setSelectedZone, setView, bp }) {
       <div style={{ padding: isDesktop ? "28px 36px" : isTablet ? "20px 28px" : "20px 16px" }}>
         {/* Desktop search */}
         {isDesktop && (
-          <div style={{ maxWidth: 480, marginBottom: 28 }}>
-            <SearchBar value={query} onChange={setQuery} placeholder={tab === "parking" ? "ค้นหา เช่น BSC หรือ คุณหญิงหลง" : "ค้นหาพื้นที่..."} />
+          <div style={{ marginBottom: 28 }}>
+            <div style={{ maxWidth: 480, marginBottom: 12 }}>
+              <SearchBar value={query} onChange={setQuery} placeholder={tab === "parking" ? "ค้นหา เช่น BSC หรือ คุณหญิงหลง" : "ค้นหาพื้นที่..."} />
+            </div>
+            <FilterPills active={filter} onChange={setFilter} />
           </div>
         )}
 
