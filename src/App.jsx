@@ -413,20 +413,16 @@ function DetailView({ zone, onBack, bp }) {
             >
               🗺 นำทางด้วย Google Maps
             </button>
-            {zone.available === 0 && (
-              <>
-                <button
-                  onClick={() => setReported(!reported)}
-                  style={{ width: "100%", padding: "14px 0", borderRadius: 12, border: `1.5px solid ${reported ? "#bfdbfe" : "#e5e5e5"}`, background: reported ? "#eff6ff" : "#fff", fontFamily: "'Noto Sans Thai',sans-serif", fontSize: 14, fontWeight: 600, color: reported ? "#2563eb" : "#555", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}
-                >
-                  {reported ? "🔔 แจ้งเตือนเปิดใช้งานแล้ว — แตะเพื่อยกเลิก" : "🔔 แจ้งเตือนเมื่อมีที่ว่าง"}
-                </button>
-                {reported && (
-                  <div style={{ marginTop: 8, background: "#eff6ff", border: "1.5px solid #bfdbfe", borderRadius: 10, padding: "10px 14px", fontSize: 12, color: "#2563eb", lineHeight: 1.6 }}>
-                    ระบบจะแจ้งเตือนคุณทันทีเมื่อมีที่ว่างใน <strong>{zone.name}</strong>
-                  </div>
-                )}
-              </>
+            <button
+              onClick={() => setReported(!reported)}
+              style={{ width: "100%", padding: "14px 0", borderRadius: 12, border: `1.5px solid ${reported ? "#bfdbfe" : "#e5e5e5"}`, background: reported ? "#eff6ff" : "#fff", fontFamily: "'Noto Sans Thai',sans-serif", fontSize: 14, fontWeight: 600, color: reported ? "#2563eb" : "#555", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}
+            >
+              {reported ? "🔔 แจ้งเตือนเปิดใช้งานแล้ว — แตะเพื่อยกเลิก" : "🔔 แจ้งเตือนเมื่อเปลี่ยนสถานะ"}
+            </button>
+            {reported && (
+              <div style={{ marginTop: 8, background: "#eff6ff", border: "1.5px solid #bfdbfe", borderRadius: 10, padding: "10px 14px", fontSize: 12, color: "#2563eb", lineHeight: 1.6 }}>
+                ระบบจะแจ้งเตือนคุณทันทีเมื่อสถานะของ <strong>{zone.name}</strong> เปลี่ยนแปลง
+              </div>
             )}
           </div>
         </div>
