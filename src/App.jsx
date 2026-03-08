@@ -276,7 +276,7 @@ function FloorPlan({ slots, type }) {
 }
 
 /* ─── Zone Card ──────────────────────────────────── */
-function ZoneCard({ zone, onClick }) {
+function ZoneCard({ zone, onClick, isFav }) {
   const status = getStatus(zone.available);
   const [hover, setHover] = useState(false);
   return (
@@ -288,7 +288,10 @@ function ZoneCard({ zone, onClick }) {
       style={{ background: "#fff", border: `1.5px solid ${hover ? "#c8c8c5" : "#ebebea"}`, borderRadius: 16, padding: "18px 20px", cursor: "pointer", transition: "all 0.2s", transform: hover ? "translateY(-2px)" : "none", boxShadow: hover ? "0 6px 24px rgba(0,0,0,0.07)" : "none" }}
     >
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 14 }}>
-        <div style={{ fontSize: 15, fontWeight: 600, color: "#111", lineHeight: 1.35, flex: 1, marginRight: 10 }}>{zone.name}</div>
+        <div style={{ display: "flex", alignItems: "center", gap: 6, flex: 1, marginRight: 10 }}>
+          {isFav && <span style={{ fontSize: 13, lineHeight: 1 }}>⭐</span>}
+          <div style={{ fontSize: 15, fontWeight: 600, color: "#111", lineHeight: 1.35 }}>{zone.name}</div>
+        </div>
         <Badge status={status} />
       </div>
       <div style={{ display: "flex", alignItems: "baseline", gap: 6, marginBottom: 12 }}>
@@ -321,12 +324,17 @@ function SearchBar({ value, onChange, placeholder }) {
 }
 
 /* ─── Tab Toggle ─────────────────────────────────── */
-function TabToggle({ tab, setTab }) {
+function TabToggle({ tab, setTab, favCount }) {
+  const TABS = [
+    { id: "parking",   label: "🚗 ลานจอดรถ" },
+    { id: "study",     label: "🪑 อ่านหนังสือ" },
+    { id: "favorites", label: `⭐ โปรด${favCount > 0 ? ` (${favCount})` : ""}` },
+  ];
   return (
     <div style={{ display: "flex", background: "#efefed", borderRadius: 12, padding: 4, gap: 4 }}>
-      {["parking", "study"].map((t) => (
-        <button key={t} onClick={() => setTab(t)} style={{ flex: 1, padding: "9px 0", borderRadius: 9, border: "none", background: tab === t ? "#fff" : "transparent", color: tab === t ? "#111" : "#888", fontFamily: "'Noto Sans Thai',sans-serif", fontWeight: tab === t ? 600 : 400, fontSize: 13, cursor: "pointer", transition: "all 0.2s", boxShadow: tab === t ? "0 1px 4px rgba(0,0,0,0.08)" : "none" }}>
-          {t === "parking" ? "🚗 ลานจอดรถ" : "🪑 พื้นที่อ่านหนังสือ"}
+      {TABS.map((t) => (
+        <button key={t.id} onClick={() => setTab(t.id)} style={{ flex: 1, padding: "9px 0", borderRadius: 9, border: "none", background: tab === t.id ? "#fff" : "transparent", color: tab === t.id ? "#111" : "#888", fontFamily: "'Noto Sans Thai',sans-serif", fontWeight: tab === t.id ? 600 : 400, fontSize: 12, cursor: "pointer", transition: "all 0.2s", boxShadow: tab === t.id ? "0 1px 4px rgba(0,0,0,0.08)" : "none", whiteSpace: "nowrap" }}>
+          {t.label}
         </button>
       ))}
     </div>
@@ -353,12 +361,13 @@ function SectionCard({ title, children, style: extra }) {
 }
 
 /* ─── Detail View ────────────────────────────────── */
-function DetailView({ zone, onBack, bp }) {
+function DetailView({ zone, onBack, bp, favorites, toggleFavorite }) {
   const [reported, setReported] = useState(false);
   const status = getStatus(zone.available);
   const isDesktop = bp === "desktop";
   const isTablet  = bp === "tablet";
   const pad = isDesktop ? "28px 36px 20px" : isTablet ? "24px 28px 16px" : "52px 20px 16px";
+  const isFav = favorites.includes(zone.id);
 
   return (
     <div className="detail-anim" style={{ background: "#fafaf8", minHeight: "100vh" }}>
@@ -415,9 +424,15 @@ function DetailView({ zone, onBack, bp }) {
             </button>
             <button
               onClick={() => setReported(!reported)}
-              style={{ width: "100%", padding: "14px 0", borderRadius: 12, border: `1.5px solid ${reported ? "#bfdbfe" : "#e5e5e5"}`, background: reported ? "#eff6ff" : "#fff", fontFamily: "'Noto Sans Thai',sans-serif", fontSize: 14, fontWeight: 600, color: reported ? "#2563eb" : "#555", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}
+              style={{ width: "100%", padding: "14px 0", borderRadius: 12, border: `1.5px solid ${reported ? "#bfdbfe" : "#e5e5e5"}`, background: reported ? "#eff6ff" : "#fff", fontFamily: "'Noto Sans Thai',sans-serif", fontSize: 14, fontWeight: 600, color: reported ? "#2563eb" : "#555", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginBottom: 10 }}
             >
               {reported ? "🔔 แจ้งเตือนเปิดใช้งานแล้ว — แตะเพื่อยกเลิก" : "🔔 แจ้งเตือนเมื่อเปลี่ยนสถานะ"}
+            </button>
+            <button
+              onClick={() => toggleFavorite(zone.id)}
+              style={{ width: "100%", padding: "14px 0", borderRadius: 12, border: `1.5px solid ${isFav ? "#fde68a" : "#e5e5e5"}`, background: isFav ? "#fffbeb" : "#fff", fontFamily: "'Noto Sans Thai',sans-serif", fontSize: 14, fontWeight: 600, color: isFav ? "#d97706" : "#555", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}
+            >
+              {isFav ? "⭐ บันทึกแล้ว — แตะเพื่อเอาออก" : "☆ บันทึกรายการโปรด"}
             </button>
             {reported && (
               <div style={{ marginTop: 8, background: "#eff6ff", border: "1.5px solid #bfdbfe", borderRadius: 10, padding: "10px 14px", fontSize: 12, color: "#2563eb", lineHeight: 1.6 }}>
@@ -472,8 +487,9 @@ function NotificationPanel({ onClose, bp }) {
 /* ─── Sidebar (desktop only) ─────────────────────── */
 function Sidebar({ tab, setTab, view, setView }) {
   const NAV = [
-    { id: "parking", icon: "🚗", label: "ลานจอดรถ" },
-    { id: "study",   icon: "🪑", label: "พื้นที่อ่านหนังสือ" },
+    { id: "parking",   icon: "🚗", label: "ลานจอดรถ" },
+    { id: "study",     icon: "🪑", label: "พื้นที่อ่านหนังสือ" },
+    { id: "favorites", icon: "⭐", label: "รายการโปรด" },
   ];
   const unreadCount = NOTIFS.filter(n => n.unread).length;
   return (
@@ -531,7 +547,7 @@ function FilterPills({ active, onChange }) {
 }
 
 /* ─── Home / Dashboard ───────────────────────────── */
-function HomeView({ tab, setTab, zones, setSelectedZone, setView, bp }) {
+function HomeView({ tab, setTab, zones, setSelectedZone, setView, bp, favorites }) {
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState("all");
   const isDesktop = bp === "desktop";
@@ -562,7 +578,7 @@ function HomeView({ tab, setTab, zones, setSelectedZone, setView, bp }) {
               )}
             </button>
           </div>
-          <div style={{ marginBottom: 12 }}><TabToggle tab={tab} setTab={setTab} /></div>
+          <div style={{ marginBottom: 12 }}><TabToggle tab={tab} setTab={setTab} favCount={favorites.length} /></div>
           <SearchBar value={query} onChange={setQuery} placeholder={tab === "parking" ? "ค้นหา เช่น BSC หรือ คุณหญิงหลง" : "ค้นหาพื้นที่..."} />
           <div style={{ marginTop: 10 }}><FilterPills active={filter} onChange={setFilter} /></div>
         </div>
@@ -601,10 +617,10 @@ function HomeView({ tab, setTab, zones, setSelectedZone, setView, bp }) {
         {/* Card grid */}
         <div style={{ display: "grid", gridTemplateColumns: isDesktop ? "repeat(2,1fr)" : isTablet ? "repeat(2,1fr)" : "1fr", gap: isDesktop ? 20 : 14 }}>
           {filtered.length === 0 ? (
-            <div style={{ textAlign: "center", color: "#bbb", padding: "40px 0", fontSize: 14, gridColumn: "1/-1" }}>ไม่พบสถานที่ที่ค้นหา</div>
+            <div style={{ textAlign: "center", color: "#bbb", padding: "40px 0", fontSize: 14, gridColumn: "1/-1" }}>{tab === "favorites" && favorites.length === 0 ? "ยังไม่มีรายการโปรด กดดาว ⭐ ในหน้ารายละเอียดเพื่อเพิ่ม" : "ไม่พบสถานที่ที่ค้นหา"}</div>
           ) : (
             filtered.map(zone => (
-              <ZoneCard key={zone.id} zone={zone} onClick={() => setSelectedZone(zone)} />
+              <ZoneCard key={zone.id} zone={zone} onClick={() => setSelectedZone(zone)} isFav={favorites.includes(zone.id)} />
             ))
           )}
         </div>
@@ -629,13 +645,17 @@ export default function App() {
   const [tab, setTab] = useState("parking");
   const [view, setView] = useState("home"); // "home" | "notif"
   const [selectedZone, setSelectedZone] = useState(null);
+  const [favorites, setFavorites] = useState([]);
 
-  const zones = tab === "parking" ? PARKING_ZONES : STUDY_ZONES;
+  const toggleFavorite = (id) => setFavorites(prev => prev.includes(id) ? prev.filter(f => f !== id) : [...prev, id]);
+
+  const allZones = [...PARKING_ZONES, ...STUDY_ZONES];
+  const zones = tab === "parking" ? PARKING_ZONES : tab === "study" ? STUDY_ZONES : allZones.filter(z => favorites.includes(z.id));
 
   const mainContent = () => {
-    if (selectedZone) return <DetailView zone={selectedZone} onBack={() => setSelectedZone(null)} bp={bp} />;
+    if (selectedZone) return <DetailView zone={selectedZone} onBack={() => setSelectedZone(null)} bp={bp} favorites={favorites} toggleFavorite={toggleFavorite} />;
     if (view === "notif") return <NotificationPanel onClose={() => setView("home")} bp={bp} />;
-    return <HomeView tab={tab} setTab={setTab} zones={zones} setSelectedZone={setSelectedZone} setView={setView} bp={bp} />;
+    return <HomeView tab={tab} setTab={setTab} zones={zones} setSelectedZone={setSelectedZone} setView={setView} bp={bp} favorites={favorites} />;
   };
 
   return (
